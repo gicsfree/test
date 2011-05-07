@@ -3,7 +3,7 @@
 int decimal_to_binary(int n);
 int bit_mul(int m, int n);
 char *letter_switch(char *string);
-char *decrypt(char *string);
+char *decrypt(char *s);
 
 int main(int argc, char *argv[])
 {
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 
 			printf("intput x y :");
 			scanf("%d %d", &x, &y);
-			bit_mul(x,y);
+			bit_mul(x, y);
 			break;
 		case 3:
 			printf("input a string :");
@@ -53,22 +53,21 @@ int main(int argc, char *argv[])
 
 int decimal_to_binary(int n)
 {
-	int i, j, p;
+	int i, j, binary;
 	if ((n >> 31) & 1) {
-		p = ~(n - 1);
+		binary = ~(n - 1);
 		printf("-");
 	} else
-		p = n;
+		binary = n;
 	for (i = 30; i >= 0; i--)
-		if ((p >> i) & 1)
+		if ((binary >> i) & 1)
 			break;
-	printf("decimal %d change to binary is ", n);
 	for (j = i; j >= 0; j--)
-		printf("%d", ((p >> j) & 1));
+		printf("%d", ((binary >> j) & 1));
 	printf("\n");
+
 	return 0;
 }
-
 
 int bit_mul(int m, int n)
 {
@@ -88,7 +87,7 @@ int bit_mul(int m, int n)
 			result += q << i;
 	if (1 == flag)
 		result = ~result + 1;
-	printf("x * y =%d\n", result);
+
 	return result;
 }
 
@@ -101,24 +100,23 @@ char *letter_switch(char *string)
 			p++;
 		} else
 			p++;
-	printf("%s\n", string);
 	return string;
 }
 
-char *decrypt(char *string)
+char *encrypt(char *s)
 {
-	char *p = string, *q = string;
-	printf("jiamiqian :%s\n", p);
+	char *p = s, *q = s;
+	printf("encrypt_before is :%s\n", s);
 	while (*p) {
 		*p = *p ^ 'x';
 		p++;
 	}
-	printf("jiamihou :%s\n", string);
+	printf("encrypted is      :%s\n", s);
 	while (*q) {
 		*q = *q ^ 'x';
 		q++;
 	}
-	printf("jiemihou :%s\n", string);
+	printf("decrypted is      :%s\n", s);
 
-	return string;
+	return s;
 }
