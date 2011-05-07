@@ -1,3 +1,4 @@
+#include <stdio.h>
 
 int decimal_to_binary(int n)
 {

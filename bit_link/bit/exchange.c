@@ -1,3 +1,4 @@
+#include <stdio.h>
 
 char *letter_switch(char *string)
 {

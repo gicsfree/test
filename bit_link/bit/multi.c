@@ -1,3 +1,4 @@
+#include <stdio.h>
 
 int bit_mul(int m, int n)
 {
