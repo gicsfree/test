@@ -1,7 +1,10 @@
 #include <stdio.h>
 
-char *letter_switch(char *string)
+void exchange()
 {
+    char string[128];
+    printf("inout a string:");
+    scanf("%s",string);
 	char *p = string;
 	while (*p)
 		if ((*p >= 'a' && *p <= 'z') || (*p >= 'A' && *p <= 'Z')) {
@@ -9,5 +12,6 @@ char *letter_switch(char *string)
 			p++;
 		} else
 			p++;
-	return string;
+    printf("%s\n",string);            
+ 
 }

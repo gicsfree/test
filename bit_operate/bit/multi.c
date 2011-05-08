@@ -1,7 +1,10 @@
+#include <stdio.h>
 
-int bit_mul(int m, int n)
+void multi()
 {
-	int i, p, q, result = 0, flag = 0;
+	int i, p, q,m,n, result = 0, flag = 0;
+    printf("input x y:");
+    scanf("%d %d",&m,&n);
 	if ((m >> 31) & 1)
 		p = ~(m - 1);
 	else
@@ -17,6 +20,6 @@ int bit_mul(int m, int n)
 			result += q << i;
 	if (1 == flag)
 		result = ~result + 1;
+    printf("x * y=%d\n",result);
 
-	return result;
 }

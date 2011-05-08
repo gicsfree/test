@@ -76,9 +76,9 @@ char *my_shell(char *s)
 		s++;
 	}
     if(flag2==0)
-    		printf(",in-file:NULL");
+    		printf(", out-file:NULL");
             if(flag3==0)
-printf(",out-file:NULL\n");
+printf(",in-file:NULL\n");
 	printf("\n");
 	return str;
 }

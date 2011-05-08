@@ -1,3 +1,14 @@
+#include <stdio.h>
+int decimal_to_binary(int n);
+
+int main(int argc, char *argv[])
+{
+	int decimal;
+	printf("input :decimal\n");
+	scanf("%d", &decimal);
+	decimal_to_binary(decimal);
+	return 0;
+}
 
 int decimal_to_binary(int n)
 {
