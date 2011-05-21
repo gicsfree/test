@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "d2b.h"
 #include "exchange.h"
-#include "encryption.h"
+#include "eneryption.h"
 #include "multi.h"
 
 int main(int argc, char *argv[])
@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 	int m, n, x, y;
 	char string[128], s[128];
 	while (1) {
-		printf("1.decimal to bilary\n");
+		printf("1.secimal to bilary\n");
 		printf("2.x*y\n");
 		printf("3.low or up exchange\n");
 		printf("4.encryption\n");
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 		case 4:
 			printf("input a string :");
 			scanf("%s", s);
-			encrypt(s);
+			decrypt(s);
 			break;
 		case 5:
 			return 0;
