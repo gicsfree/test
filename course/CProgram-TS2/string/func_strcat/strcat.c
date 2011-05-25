@@ -5,7 +5,7 @@
 
 int main(int argc, char**argv)
 {
-    char s[] = "Hello Nanjing";
+    char s[] = "Hello B33sdeiji City"; //here has a bug,why?
     char d[] = "Hello Beijing City,";
     
     printf("%s \n", d);        

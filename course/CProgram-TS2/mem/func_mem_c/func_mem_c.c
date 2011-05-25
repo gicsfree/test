@@ -11,8 +11,10 @@ int main (int argc, char** argv)
     
     d = malloc(128);
     
+//    printf("%c\n",*d);
     memcpy(d, s, strlen(s));
     printf("memcpy d string is %s\n", d);
+//    printf("%c\n",*(d+strlen(s)-1));
     
     memmove(d, d + 6, strlen(d) - 6);
     printf("no.1: memmove d string is %s\n", d);

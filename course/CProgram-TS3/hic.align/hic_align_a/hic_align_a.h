@@ -6,7 +6,7 @@
 struct align_t1
 {
    char  a;
-	 short b;
+     short b;
 	 int   c;
 	 char  d;
 };

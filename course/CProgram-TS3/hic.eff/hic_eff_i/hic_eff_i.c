@@ -27,7 +27,7 @@ int inline_test(void)
 
 int main(int argc, char** argv)
 {
-    long long iloop = 8000;
+    long long iloop = 800;
     long long time = 0;
     struct timeval *tv;
 	  

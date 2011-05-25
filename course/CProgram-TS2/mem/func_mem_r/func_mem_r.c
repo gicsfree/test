@@ -7,6 +7,7 @@
 int main (int argc, char** argv)
 {
      char *p;
+     int i;
 
      p = (char *)malloc(8);
      if(p == NULL)
@@ -14,6 +15,8 @@ int main (int argc, char** argv)
          printf("malloc failure!\n");
          return -1;
      }
+     for (i=0 ;i<8 ;i++)
+        printf("%c\n",*(p+i));
      
      memset(p, 0x61, 9);                 // Here have a bug, do you know why?
      p = (char *)realloc(p, 8912);
