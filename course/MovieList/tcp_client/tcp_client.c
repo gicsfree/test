@@ -13,16 +13,21 @@
 #define FILENAME_LEN 128
 #define LINE_LEN 1024
 #define VERSION "Version"
-#defien VERSION_LEN 15
+#define VERSION_LEN 15
 
-int download_list(int cClient, char filename[]);
+int download_list(int cClient, char list_name[]);
+int update_list(int cClient, char list_name[]);
+void get_version(char version[], char list_name[]);
 
 int main(int argc, char** argv)
 {
     int cPort = DEFAULT_PORT;
     int cClient = 0;
+    int cSend = 0,cRecv = 0;
     struct sockaddr_in cli;
-    char cbuf[CBUF_LEN];
+    char cbuf[CBUF_LEN], filename[FILENAME_LEN];
+    char exist[] = "is_exist";
+    char is_exist[10];
    
     if(argc < 3)
     {
@@ -49,7 +54,26 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    download_list(cClient, argv[2]);
+    strncpy(filename, argv[2], FILENAME_LEN);
+    cSend = send(cClient, filename, sizeof(filename), 0);
+    if(cSend <= 0)
+    {
+        printf("send(filename) failure!\n");
+        return -1;
+    } 
+
+    cRecv = recv(cClient, is_exist, sizeof(is_exist), 0);
+    if(cRecv <= 0)
+    {
+        printf("recv(is_exist) failure!\n");
+        return -1;
+    } 
+
+    if (0 == strncmp(is_exist, exist, strlen(exist)))
+//        download_list(cClient, filename);
+        update_list(cClient, filename);
+    else
+        printf("no such file, download failed !\n");
 
     close(cClient);
    
@@ -59,115 +83,67 @@ int main(int argc, char** argv)
 
 int download_list(int cClient, char list_name[])
 {
-    int cRecv = 0, cSend = 0;
-    char cbuf[CBUF_LEN], filename[FILENAME_LEN];
-    char exist[] = "is_exist";
-    char is_exist[10];
+    int cRecv = 0;
+    char cbuf[CBUF_LEN];
     char finish[] = "finish";
    
     memset(cbuf, 0, sizeof(cbuf));
 
-    strncpy(filename, list_name, FILENAME_LEN);  
-    cSend = send(cClient, filename, sizeof(filename), 0);
-    if(cSend <= 0)
+    FILE *fp = fopen(list_name,"w+");
+    if (fp == NULL)
     {
-        printf("send(filename) failure!\n");
+        printf("cannot open %s\n", list_name);
         return -1;
-    } 
-
-    cRecv = recv(cClient, is_exist, sizeof(is_exist), 0);
-    if(cRecv <= 0)
-    {
-        printf("recv(is_exist) failure!\n");
-        return -1;
-    } 
-
-    if (0 == strncmp(is_exist, exist, strlen(exist))){
-
-        FILE *fp = fopen(filename,"w+");
-        if (fp == NULL)
+    }
+    while (1){   
+        cRecv = recv(cClient, cbuf, sizeof(cbuf),0);   
+        if(cRecv <= 0)
         {
-            printf("cannot open %s\n", filename);
+            printf("recv() failure!\n");
             return -1;
-        }
-        while (1){   
-            cRecv = recv(cClient, cbuf, sizeof(cbuf),0);   
-            if(cRecv <= 0)
-            {
-                printf("recv(text) failure!\n");
-                return -1;
-            } 
+        } 
 
-            if (0 != strncmp(cbuf ,finish ,strlen(finish)))
-            fputs(cbuf,fp);
-            else
-            {
-                printf("download %s successfully !\n", filename);
-                fclose(fp);
-                break;
-            }
+        if (0 != strncmp(cbuf ,finish ,strlen(finish)))
+        fputs(cbuf,fp);
+        else
+        {
+            printf("download %s successfully !\n", list_name);
+            fclose(fp);
+            break;
         }
     }
-    else
-        printf("%s is not exist,download failed !\n", filename);
    
     return 0;
 }
 
+
 int update_list(int cClient, char list_name[])
 {
     int cRecv = 0, cSend = 0;
-    char cbuf[CBUF_LEN], filename[FILENAME_LEN];
-    char exist[] = "is_exist";
-    char is_exist[10];
-    char finish[] = "finish";
+    char new[] = "is_new";
+    char is_new[10];
     char version[VERSION_LEN];
-   
-    memset(cbuf, 0, sizeof(cbuf));
 
-    strncpy(filename, list_name, FILENAME_LEN);  
-    cSend = send(cClient, filename, sizeof(filename), 0);
+    get_version(version, list_name);
+
+    cSend = send(cClient, version, sizeof(version), 0);
     if(cSend <= 0)
     {
-        printf("send(filename) failure!\n");
+        printf("send(version) failure!\n");
         return -1;
     } 
 
-    cRecv = recv(cClient, is_exist, sizeof(is_exist), 0);
+    cRecv = recv(cClient, is_new, sizeof(is_new), 0);
     if(cRecv <= 0)
     {
-        printf("recv(is_exist) failure!\n");
+        printf("recv(is_new) failure!\n");
         return -1;
     } 
 
-    if (0 == strncmp(is_exist, exist, strlen(exist))){
-
-        FILE *fp = fopen(filename,"w+");
-        if (fp == NULL)
-        {
-            printf("cannot open %s\n", filename);
-            return -1;
-        }
-        while (1){   
-            cRecv = recv(cClient, cbuf, sizeof(cbuf),0);   
-            if(cRecv <= 0)
-            {
-                printf("recv(text) failure!\n");
-                return -1;
-            } 
-
-            if (0 != strncmp(cbuf ,finish ,strlen(finish)))
-            fputs(cbuf,fp);
-            else
-            {
-                printf("download %s successfully !\n", filename);
-                fclose(fp);
-                break;
-            }
-        }
-    }
+    if (0 != strncmp(is_new, new, strlen(new)))
+        download_list(cClient, list_name);
     else
-        printf("%s is not exist,download failed !\n", filename);
+        printf("the version is newtest !\n");
    
     return 0;
 }
@@ -176,17 +152,24 @@ void get_version(char version[], char list_name[])
 {
     FILE *fp;
     char aLine[LINE_LEN];
-//    flag = 0;
 
     fp = fopen(list_name, "r");
+    if (fp == NULL)
+    {
+        printf("cannot open %s !\n", list_name);
+        exit(1);
+    }
     while (fgets(aLine, LINE_LEN, fp) != NULL)
     {
         if (strstr(aLine, VERSION) != NULL)    
+        {
             strncpy(version, aLine, LINE_LEN);
+            fclose(fp);
+            break;
+        }
     }
 
 }
-
 
 
 
